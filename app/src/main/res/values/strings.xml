@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">My Widget App</string>
+    <string name="widget_name">Мой виджет</string>
+    <string name="widget_text">Привет, это мой виджет!</string>
+</resources>
