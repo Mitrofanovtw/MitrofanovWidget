@@ -5,22 +5,27 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.util.Log;
 import android.widget.RemoteViews;
-
 import java.util.Arrays;
 
 public class AppWidget extends AppWidgetProvider {
-    final String LOG_TAG = "myLogs";
+    private static final String LOG_TAG = "YandexWidget";
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-        CharSequence widgetText = "EXAMPLE";
+
+        String widgetText = "Оренбург\n+4°C, облачно\nЯндекс.Погода";
+
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.app_widget);
         views.setTextViewText(R.id.appwidget_text, widgetText);
+
         appWidgetManager.updateAppWidget(appWidgetId, views);
+
+        Log.d(LOG_TAG, "Yandex widget updated");
     }
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        Log.d(LOG_TAG, "onUpdate called");
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
