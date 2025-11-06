@@ -10,12 +10,12 @@ import java.net.URL;
 
 public class ConnectFetch {
     private static final String LOG_TAG = "YandexWeatherAPI";
-
     private static final String YANDEX_WEATHER_API =
             "https://api.weather.yandex.ru/v2/forecast?lat=%s&lon=%s&extra=true";
-
     private static final String ORENBURG_LAT = "51.7727";
     private static final String ORENBURG_LON = "55.0988";
+    private static final String OPEN_WEATHER_ICON =
+            "https://openweathermap.org/img/wn/%s@2x.png";
 
     public static JSONObject getJSON(Context context, String city) {
         return getYandexWeatherData(context);
@@ -33,7 +33,6 @@ public class ConnectFetch {
             connection.setRequestMethod("GET");
             connection.setConnectTimeout(10000);
             connection.setReadTimeout(10000);
-
             connection.setRequestProperty("X-Yandex-API-Key", apiKey);
 
             int responseCode = connection.getResponseCode();
@@ -50,19 +49,22 @@ public class ConnectFetch {
                 }
                 reader.close();
 
-                Log.d(LOG_TAG, "Yandex API Success! Response: " + json.toString());
-
-                JSONObject data = new JSONObject(json.toString());
-                return data;
-
-            } else {
-                Log.e(LOG_TAG, "Yandex HTTP error: " + responseCode + " - " + connection.getResponseMessage());
-                return getMockYandexWeatherData();
+                Log.d(LOG_TAG, "Yandex API подключено! Ответ: " + json.toString());
+                return new JSONObject(json.toString());
             }
-
         } catch (Exception e) {
             Log.e(LOG_TAG, "Yandex API Exception: " + e.getMessage());
-            return getMockYandexWeatherData();
+        }
+        return getMockYandexWeatherData();
+    }
+
+    public static String getIconUrl(JSONObject json) {
+        try {
+            JSONObject details = json.getJSONArray("weather").getJSONObject(0);
+            String icon = details.getString("icon");
+            return String.format(OPEN_WEATHER_ICON, icon);
+        } catch (Exception e) {
+            return String.format(OPEN_WEATHER_ICON, "01d");
         }
     }
 
@@ -83,8 +85,8 @@ public class ConnectFetch {
                             "  \"url\": \"https://yandex.ru/pogoda/orenburg\"" +
                             "}," +
                             "\"fact\": {" +
-                            "  \"temp\": 4," +
-                            "  \"feels_like\": 1," +
+                            "  \"temp\": -5," +
+                            "  \"feels_like\": -8," +
                             "  \"icon\": \"ovc\"," +
                             "  \"condition\": \"cloudy\"," +
                             "  \"wind_speed\": 3.5," +
@@ -102,12 +104,8 @@ public class ConnectFetch {
                             "  \"sunset\": \"17:30\"" +
                             "}" +
                             "}";
-
-            Log.w(LOG_TAG, "Using mock Yandex weather data");
             return new JSONObject(mockJson);
-
         } catch (Exception e) {
-            Log.e(LOG_TAG, "Error creating mock Yandex data: " + e.getMessage());
             return null;
         }
     }
