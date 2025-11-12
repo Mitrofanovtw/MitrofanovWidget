@@ -42,11 +42,12 @@ public class StaticWeatherAnalyze {
     public static String getTemperatureField(JSONObject json) {
         try {
             JSONObject fact = json.getJSONObject("fact");
-            return String.format("%.2f", fact.getDouble("temp"))+ " °C";
+            int temp = fact.getInt("temp");
+            return temp + "°C";
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "NaN";
+        return "Н/Д";
     }
 
     private static String translateCondition(String condition) {

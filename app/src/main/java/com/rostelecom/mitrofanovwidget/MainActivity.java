@@ -1,7 +1,11 @@
 package com.rostelecom.mitrofanovwidget;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.widget.Button;
+import android.text.InputType;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,8 +19,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setInfo();
+    }
 
-        new ConnectFetch(this, "Orenburg", new ConnectFetch.OnConnectionCompleteListener() {
+    private void setInfo() {
+        new ConnectFetch(this, new CityPreference(this).getCity(), new ConnectFetch.OnConnectionCompleteListener() {
             @Override
             public void onSuccess(JSONObject response) {
                 renderWeather(response);
@@ -29,23 +36,31 @@ public class MainActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG).show();
             }
         });
+    }
 
-        Button refreshButton = findViewById(R.id.refresh_button);
-        refreshButton.setOnClickListener(v -> {
-            new ConnectFetch(MainActivity.this, "Orenburg", new ConnectFetch.OnConnectionCompleteListener() {
-                @Override
-                public void onSuccess(JSONObject response) {
-                    renderWeather(response);
-                }
 
-                @Override
-                public void onFail(String message) {
-                    Toast.makeText(MainActivity.this,
-                            message,
-                            Toast.LENGTH_LONG).show();
-                }
-            });
+    public void changeCity(String city) {
+        new CityPreference(this).setCity(city);
+        setInfo();
+    }
+
+    private void showInputDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Измените город:");
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+        builder.setPositiveButton("Сохранить", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                changeCity(input.getText().toString());
+            }
         });
+        builder.show();
+    }
+
+    public void setCity(View view) {
+        showInputDialog();
     }
 
     private void renderWeather(JSONObject json) {

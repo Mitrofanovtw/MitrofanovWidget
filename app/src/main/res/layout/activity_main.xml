@@ -12,7 +12,10 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:text="Город"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:onClick="setCity"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/updated_field"
@@ -22,15 +25,16 @@
         android:layout_centerHorizontal="true"
         android:text="Время последнего обновления"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textSize="13sp" />
+        android:textSize="14sp"
+        android:layout_marginTop="8dp" />
 
     <ImageView
         android:id="@+id/weather_icon"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_centerInParent="true"
+        android:contentDescription="Иконка погоды"
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/current_temperature_field"
@@ -40,7 +44,9 @@
         android:layout_centerHorizontal="true"
         android:text="Температура"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="40sp" />
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp" />
 
     <TextView
         android:id="@+id/details_field"
@@ -48,8 +54,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/weather_icon"
         android:layout_centerHorizontal="true"
-        android:text="краткое описание\nвлажность\nдавление"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:text="Краткое описание\nВлажность\nДавление"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:layout_marginTop="16dp" />
 
     <Button
         android:id="@+id/refresh_button"
@@ -57,6 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:text="Обновить" />
+        android:text="Обновить"
+        android:layout_margin="16dp" />
 
 </RelativeLayout>

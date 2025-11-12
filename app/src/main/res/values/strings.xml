@@ -3,4 +3,6 @@
     <string name="widget_name">Погода Яндекс</string>
     <string name="widget_text">Загрузка погоды...</string>
     <string name="yandex_weather_api_key">0c0eb2f2-3b6f-4673-8a9e-c5c8f888930b</string>
+    <string name="title_activity_config">ConfigActivity</string>
+    <string name="title_activity_config_activity.java">ConfigActivity.java</string>
 </resources>
