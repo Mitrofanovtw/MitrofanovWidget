@@ -1,6 +1,7 @@
 package com.rostelecom.mitrofanovwidget;
 
 import android.content.Context;
+import android.os.Handler;
 import android.util.Log;
 import org.json.JSONObject;
 import java.io.BufferedReader;
@@ -17,6 +18,41 @@ public class ConnectFetch {
     private static final String OPEN_WEATHER_ICON =
             "https://openweathermap.org/img/wn/%s@2x.png";
 
+    private OnConnectionCompleteListener listener;
+    private Handler handler;
+
+    public interface OnConnectionCompleteListener {
+        void onSuccess(JSONObject response);
+        void onFail(String message);
+    }
+
+    public ConnectFetch(Context context, String city, OnConnectionCompleteListener listener) {
+        this.listener = listener;
+        handler = new Handler();
+        updateWeatherData(city, context);
+    }
+
+    private void updateWeatherData(final String city, final Context context) {
+        new Thread() {
+            public void run() {
+                final JSONObject json = getJSON(context, city);
+                if (json == null) {
+                    handler.post(new Runnable() {
+                        public void run() {
+                            listener.onFail(city + " - информация не найдена");
+                        }
+                    });
+                } else {
+                    handler.post(new Runnable() {
+                        public void run() {
+                            listener.onSuccess(json);
+                        }
+                    });
+                }
+            }
+        }.start();
+    }
+
     public static JSONObject getJSON(Context context, String city) {
         return getYandexWeatherData(context);
     }
@@ -26,8 +62,6 @@ public class ConnectFetch {
             String apiKey = context.getString(R.string.yandex_weather_api_key);
             String urlString = String.format(YANDEX_WEATHER_API, ORENBURG_LAT, ORENBURG_LON);
 
-            Log.d(LOG_TAG, "Fetching from Yandex API: " + urlString);
-
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
@@ -36,8 +70,6 @@ public class ConnectFetch {
             connection.setRequestProperty("X-Yandex-API-Key", apiKey);
 
             int responseCode = connection.getResponseCode();
-            Log.d(LOG_TAG, "Yandex Response Code: " + responseCode);
-
             if (responseCode == 200) {
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(connection.getInputStream()));
@@ -48,8 +80,6 @@ public class ConnectFetch {
                     json.append(line);
                 }
                 reader.close();
-
-                Log.d(LOG_TAG, "Yandex API подключено! Ответ: " + json.toString());
                 return new JSONObject(json.toString());
             }
         } catch (Exception e) {
